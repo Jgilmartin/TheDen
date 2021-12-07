@@ -8,17 +8,60 @@
 </head>
 
 <body>
+	<!-- a 'profile' variable should be passed here.. 
+		it will be an object that should contain data from the database-->
+
 	<div class="profile_panel"> <!-- Panel on the left side of the screen -->
-		<!-- Profile Picture -->
-		<!-- Screen Name -->
-		<!-- Log Out Button/Text -->
+		<!-- Profile Picture {profile.pfp:}-->
+		<!-- Screen Name {profile.screenname:}-->
+
+		<!-- My Profile Button? This would route to another template... 
+			it should call a python file first so you can query from the db-->
+
+		<!-- Log Out Button/Text Sign out and route to log-in template-->
 
 	</div>
 
+	<!-- a 'feed' variable should be passed to the html file... 
+		it will be an object with lots of attributes... 
+		we should generate the feed in the python file that calls this template... 
+		meaning we should query the for the feed before hand-->
+
 	<div class="main_feed"> <!-- Contain posts and their top comments? -->
-		<% for post in feed.posts: %> <!-- Iterate through our posts in our users feed -->
-		<div class="post">
+	<% for post in feed.posts: %> <!-- Iterate through our posts in our users feed -->
+		<div class="post"> <!-- Post div will need all database variables/attributes from post class? -->
+			<div class="post_metadata">
+				<!-- Author -->
+				<div class="author">
+					<!-- Profile Pic {post.author_picture} -->
+					<!-- Profile Author -->
+					<h2> {post.author_name:}</h2>
+				</div>
+				<div class="likes">
+					<!-- Number of likes -->
+					<h2> {post.like_number:}</h2>
+					<!-- Thumbs up button-->
+					<!-- Number of dislikes -->
+					<h2> {post.dislike_number:}</h2>
+					<!-- Thumbs Down button-->
+				</div>
+			</div>
 		</div>
+		<div class="comment_preview"> <!-- Comment preview for each post-->
+			<h2 class="comment_number"> {post.comment_number:} Comments <h2>
+
+			<!-- only show the top comment on the feed?? -->
+			<div class="comment">
+				<!-- Tiny Profile Pic? {post.top_comment.author_picture} -->
+				<h2> {post.top_comment.author_name:} </h2>
+				<p class="comment_text"> {post.top_comment.text:} <p>
+			</div>
+
+			<!-- if more than one comment we should use a for loop with post.comments as an array... with a comment div-->
+		</div>
+		<!-- Insert Spacing Between Posts -->
+
+	<% end %>
 	</div>
 
 </body>
