@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+
+</head>
+
+<body>
+	<div class="profile_panel"> <!-- Panel on the left side of the screen -->
+		<!-- Profile Picture -->
+		<!-- Screen Name -->
+		<!-- Log Out Button/Text -->
+
+	</div>
+
+	<div class="main_feed"> <!-- Contain posts and their top comments? -->
+		<% for post in feed.posts: %> <!-- Iterate through our posts in our users feed -->
+		<div class="post">
+		</div>
+	</div>
+
+</body>
+
+</html>
