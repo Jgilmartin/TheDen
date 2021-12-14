@@ -53,6 +53,7 @@ def register():  # Create a new User and subsequent Profile
         username = request.form['new-username']
         password = request.form['new-password']
 
+        hashedPassword = hashlib.md5(password.encode())
         password = hashlib.pbkdf2_hmac('sha224',)
 
         return redirect(url_for("newUser"))
