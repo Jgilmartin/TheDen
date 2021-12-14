@@ -19,6 +19,7 @@ CREATE TABLE profile (
 	follower_list TEXT NOT NULL,
 	following_list TEXT NOT NULL,
 	post_list TEXT NOT NULL,
+	bio TEXT NOT NULL,
 	FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
