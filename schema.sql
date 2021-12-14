@@ -35,17 +35,3 @@ CREATE TABLE posts (
 	author_id INTEGER NOT NULL,
 	FOREIGN KEY (author_id) REFERENCES profile(id)
 );
-
-
-CREATE TABLE comments (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	text_content TEXT NOT NULL,
-	media_content BLOB,
-	num_likes INTEGER NOT NULL,
-	num_dislikes INTEGER NOT NULL,
-	author_id INTEGER NOT NULL,
-	date_posted TEXT NOT NULL,
-	parent_post_id INTEGER NOT NULL,
-	FOREIGN KEY (author_id) REFERENCES profile (id),
-	FOREIGN KEY (parent_post_id) REFERENCES posts (id)
-);
