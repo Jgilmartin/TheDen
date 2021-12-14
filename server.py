@@ -16,8 +16,6 @@ login_manager.login_view = 'login'
 app.secret_key = 'secret-key'
 admin = Admin(app)
 
-
-
 @app.route('/')
 def index():
     print('landing')
