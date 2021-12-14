@@ -1,22 +1,7 @@
-function login() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "http://localhost:5000/login", true);
-    xhttp.send();
+function authenticateUser() {
+    let userName = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
 
-    xhttp.onload = function () {
-
-
-    };
-}
-
-function signUp() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "http://localhost:5000/login", true);
-    xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.send();
-
-    xhttp.onload = function () {
-
-
-    };
+    console.log(userName);
+    console.log(password);
 }

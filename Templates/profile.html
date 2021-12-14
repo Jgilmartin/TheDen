@@ -121,42 +121,39 @@
                 <div class="profile-banner">
 
                     <div class="profile-page-pic">
-                        <img src=" " class="profile-pic" id="profile-pic">
+                        <img src='data:image/jpg;base64,{{ img_data }}' class="profile-pic" id="profile-pic">
 
                     </div>
                     <div class="user-info">
-                        <h2 id="username">@ </h2>
-                        <p id="followers" href="#followers">Followers: </p>
-                        <p id="following" href="#following">Following: </p>
+                        <h2 name="screename">@{{screen_name}} </h2>
+                        <p name="follower_count" href="#followers">Followers: {{follow_count}}</p>
+                        <p name="following_count" href="#following">Following: {{following_count}}</p>
                     </div>
-                    <div class="follow-options">
-                        <button class="btn btn-success">Follow</button>
-                        <button class="btn btn-danger">Unfollow</button>
-                    </div>
+
                     <div class="profile-bio">
-                        <p id="userbio">
-
-                        </p>
+                        <p name="userbio"> {{bio_text}}</p>
                     </div>
-
 
 
                 </div>
                 <div class="profile-feed">
+                    {% for post in post_list %}
+                    <!-- Iterate through our posts in our users feed -->
                     <div class="post">
                         <div class="post-content">
                             <div class="post-image">
-                                <img src=" ">
+                                <img src="data:image/jpg;base64, {{ post[2] }}">
                             </div>
                             <div class="post-desc">
-                                <p> </p>
+                                <p> {{ post[1] }} </p>
                             </div>
                         </div>
+
                         <div class="post-comments">
 
                         </div>
                     </div>
-
+                    {% endfor %}
                 </div>
             </div>
         </div>
