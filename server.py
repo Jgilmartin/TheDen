@@ -11,7 +11,7 @@ from sqlite3 import *
 from PIL import Image
 import base64
 import io
-
+import numpy as np
 
 app = Flask(__name__)
 
@@ -115,7 +115,7 @@ def viewProfile():
     #retreive screenname...
     default = "bofadeezSlayer"
 
-    cur.execute('SELECT pfp, screenname, follower_list, following_list, bio FROM profile WHERE screenname=:screenname', {"screenname": default})
+    cur.execute('SELECT pfp, screenname, follower_list, following_list, bio, post_list FROM profile WHERE screenname=:screenname', {"screenname": default})
     result = cur.fetchone()
     if result is None:
         #maybe an error profile page... like deleted profile... probably redirect back to wherever you came
@@ -126,13 +126,33 @@ def viewProfile():
     follower_string = result[2]
     following_string = result[3]
     bio = result[4]
+    string_post_list = result[5] #TODO: convert string to post_ids
 
     #get counts on follower/following strings
-    follower_count = len(follower_string.split(","))
-    following_count = len(following_string.split(","))
+    follower_count = len(follower_string.split(",")) - 1
+    following_count = len(following_string.split(",")) - 1
+
+
+    post_ids = string_post_list.split(",")
+    post_ids.pop(-1)
+
+    post_list = []
+    for pid in post_ids:
+        cur.execute('SELECT * FROM posts WHERE id=:id', {"id": pid})
+        result = cur.fetchone()
+        if result is not None:
+            post = []
+            for value in result:
+                post.append(value)
+
+            post[2] = base64.b64encode(post[2]).decode('utf-8')
+            post_list.append(post)
+
+    print(len(post_list))
+
 
     return render_template("profile.html", img_data=pfp, 
-        screen_name=screenname, follow_count=follower_count, following_count=following_count, bio_text=bio)
+        screen_name=screenname, follow_count=follower_count, following_count=following_count, bio_text=bio, post_list=post_list)
 
 
 @app.route('/login', methods =['GET','POST'], endpoint='login')
