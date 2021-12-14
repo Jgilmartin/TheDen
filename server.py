@@ -63,19 +63,16 @@ def register():  # Create a new User and subsequent Profile
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        cur.execute('INSERT INTO users(username, password) VALUES(?, ?)',(username,password))
+        cur.execute('SELECT id FROM users')
+        new_id = cur.fetchall()[-1][0] + 1
+
+        
+        cur.execute('INSERT INTO users(username, password, profile_id) VALUES(?, ?, ?)',(username,password, new_id))
         connection.commit()
         logout_user()
-
-        cur.execute('SELECT id FROM users WHERE username=:username AND password=:password', {"username": inputted_username, "password": inputted_password})
-        new_id = cur.fetchone()[0]
-        new_user = User()
+        new_user = Users()
         new_user.id = new_id
         login_user(new_user)
-
-
-        hashedPassword = hashlib.md5(password.encode())
-        password = hashlib.pbkdf2_hmac('sha224',)
 
         return redirect(url_for('newUser'))
 
@@ -85,9 +82,20 @@ def newUser(): #Create the profile and submit to database
     print("new user")
 
     if request.method == "GET":
-        return render_template("edit_profile.html")
+        return render_template("editProfile.html")
     elif request.method == "POST":
         #Retrieve new profile intformation from edit_profile form and INSERT into db
+        #Retrieve post information from newPost.html and INSERT into db
+        #Blob a photo.... make null if no photo
+        new_img = request.files["edit-prof-pic"].read()
+        new_screenname = request.form["edit-screenname"]
+        new_bio = request.form["edit-bio"]
+
+        cur.execute("""INSERT INTO profile (pfp, screenname, user_id , follower_list, following_list , post_list ,bio)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)""", 
+                        (new_img, new_screenname, current_user.get_id(), "1,", "1,", "", new_bio))
+
+        connection.commit()
 
         return redirect(url_for("generateFeed"))
 
@@ -99,37 +107,44 @@ def generateFeed():
     
     cur.execute('SELECT following_list FROM profile WHERE id=:id', {"id": target_profile_id})
     result = cur.fetchone()
-    following_list = result[0].split(",")
-    following_list.pop(-1) #Remove the empty last element
+    print(result)
 
-    post_list = []
-    for profile_id in following_list:
-        cur.execute('SELECT post_list, pfp, screenname FROM profile WHERE id=:id', {"id": profile_id})
-        result = cur.fetchone()
+    if result is not None:
+        following_list = result[0].split(",")
+        following_list.pop(-1) #Remove the empty last element
 
-        if result is not None:
-            post_id_list = result[0].split(",")
-            post_id_list.pop(-1)
-
-            pfp = base64.b64encode(result[1]).decode('utf-8')
-            author = result[2]
-
-
-            cur.execute('SELECT * FROM posts where posts.id=:id', {"id": post_id_list[-1]})
+        post_list = []
+        for profile_id in following_list:
+            cur.execute('SELECT post_list, pfp, screenname FROM profile WHERE id=:id', {"id": profile_id})
             result = cur.fetchone()
+
             if result is not None:
-                post = []
-                for value in result:
-                    post.append(value)
+                post_id_list = result[0].split(",")
+                post_id_list.pop(-1)
 
-                post[2] = base64.b64encode(post[2]).decode('utf-8')
-                post.append(pfp)
-                post.append(author)
-                post_list.append(post)
+                pfp = base64.b64encode(result[1]).decode('utf-8')
+                author = result[2]
 
-    #GET follower data from database
-    print(len(post_list))
+
+                cur.execute('SELECT * FROM posts where posts.id=:id', {"id": post_id_list[-1]})
+                result = cur.fetchone()
+                if result is not None:
+                    post = []
+                    for value in result:
+                        post.append(value)
+
+                    post[2] = base64.b64encode(post[2]).decode('utf-8')
+                    post.append(pfp)
+                    post.append(author)
+                    post_list.append(post)
+
+        #GET follower data from database
+        print(len(post_list))
+        return render_template("feed.html", post_list=post_list)
+    post_list = [None]*9
     return render_template("feed.html", post_list=post_list)
+    
+
 
 @app.route('/createPost', methods = ['GET',  'POST'])
 def createPost():
@@ -188,24 +203,28 @@ def viewProfile():
     follower_count = len(follower_string.split(",")) - 1
     following_count = len(following_string.split(",")) - 1
 
+
     print(string_post_list)
 
-    post_ids = string_post_list.split(",")
-    post_ids.pop(-1)
+    if string_post_list is None:
+        post_list = [None]*9
+    else:
+        post_ids = string_post_list.split(",")
+        post_ids.pop(-1)
 
-    post_list = []
-    for pid in post_ids:
-        cur.execute('SELECT * FROM posts WHERE id=:id', {"id": pid})
-        result = cur.fetchone()
-        if result is not None:
-            post = []
-            for value in result:
-                post.append(value)
+        post_list = []
+        for pid in post_ids:
+            cur.execute('SELECT * FROM posts WHERE id=:id', {"id": pid})
+            result = cur.fetchone()
+            if result is not None:
+                post = []
+                for value in result:
+                    post.append(value)
 
-            post[2] = base64.b64encode(post[2]).decode('utf-8')
-            post_list.append(post)
+                post[2] = base64.b64encode(post[2]).decode('utf-8')
+                post_list.append(post)
 
-    print(len(post_list))
+        print(len(post_list))
 
 
     return render_template("profile.html", img_data=pfp, 
