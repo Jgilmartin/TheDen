@@ -46,26 +46,30 @@
 
             </div>
             <div class="content">
-                <div class="profile-banner">
-                    <div class="profile-page-pic">
-                        <label for="edit-screenname">Upload Profile Picture</label>
-                        <input type="file" accept="image/jpeg" name="edit-prof-pic">
+                <form action="{{url_for( )}}">
+                    <div class="profile-banner">
+                        <div class="profile-page-pic">
+                            <label for="edit-screenname">Upload Profile Picture</label>
+                            <input type="file" accept="image/jpeg" name="edit-prof-pic">
+                        </div>
+
+                        <div class="user-info">
+                            <label for="edit-screenname">Edit Screen Name</label>
+                            <input type="text" id="edit-screenname" name="edit-screenname">
+                        </div>
+
+                        <div class="profile-bio">
+                            <label for="edit-screenname">Edit Bio</label>
+                            <textarea id="edit-bio" name="edit-bio">
+
+                            </textarea>
+                        </div>
+
+
+
                     </div>
-
-                    <div class="user-info">
-                        <label for="edit-screenname">Edit Screen Name</label>
-                        <input type="text" id="edit-screenname" name="edit-screenname">
-                    </div>
-
-                    <div class="profile-bio">
-                        <label for="edit-screenname">Edit Bio</label>
-                        <textarea id="edit-bio" name="edit-bio">
-
-                        </textarea>
-                    </div>
-
-
-                </div>
+                    <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
+                </form>
             </div>
         </div>
     </div>
