@@ -52,6 +52,7 @@
                         <img src='data:image/jpg;base64,{{ img_data }}' class="profile-pic" id="profile-pic">
 
                     </div>
+
                     <div class="user-info">
                         <h2 name="screename">@{{screen_name}} </h2>
                         <p name="follower_count" href="#followers">Followers: {{follow_count}}</p>
@@ -64,6 +65,8 @@
 
 
                 </div>
+                <button type="button" class="btn btn-success">Follow</button>
+                <button type="button" class="btn btn-danger">Unfollow</button>
                 <div class="profile-feed">
                     {% for post in post_list %}
                     <!-- Iterate through our posts in our users feed -->
