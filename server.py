@@ -14,22 +14,28 @@ import io
 import numpy as np
 
 app = Flask(__name__)
-
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 app.secret_key = 'secret-key'
 admin = Admin(app)
+db = SQLAlchemy(app)
 
 #Connect to database
 connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
 
+class Users(UserMixin,db.Model): 
+    id = db.Column(db.Integer, primary_key=True) 
+
+    def __repr__(self): 
+        return '<Users %r>' % self.username
+
+
 @login_manager.user_loader
 def load_user(id):
-    cur.execute("SELECT username FROM users WHERE profile_id=:id",{"id": id})
-    user = cur.fetchone()
-    return user[0]
+    return Users.query.get(id)
 
 
 
@@ -172,22 +178,38 @@ def Login():
         inputted_password = request.form["password"]
 
         #INSERT login logic... retrieve username and password from db
-        cur.execute('SELECT username, password FROM users WHERE username=:username AND password=:password', {"username": inputted_username, "password": inputted_password})
+        cur.execute('SELECT * FROM users WHERE username=:username AND password=:password', {"username": inputted_username, "password": inputted_password})
         ogLogin =""
         result = cur.fetchone()
+
         if result is None:
             result = cur.execute('SELECT username FROM users WHERE username=:username',{"username":inputted_username}).fetchone()
             ogLogin = result
             print(result)
             if result is None:
-                print('user notfound')
                 flash('User not found. Try Registering?')
                 return redirect(url_for("login"))
             flash('Username or password is incorrect')
             return redirect(url_for("login"))
-        login_user(ogLogin)
-        
+        user = Users()
+        Users.id = result[0]
+        login_user(user)
+        print(current_user.get_id())
+
         return redirect(url_for("generateFeed"))
 
+@app.route('/register', methods =['GET','POST'], endpoint='')
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    if request.method == 'POST':
+        inputted_username = request.form["username"]
+        inputted_password = request.form["password"]
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+    
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
