@@ -7,6 +7,12 @@ from flask_login import current_user, login_user, LoginManager, UserMixin, logou
 from flask_admin import Admin
 from sqlite3 import *
 
+
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+    
 app = Flask(__name__)
 
 
