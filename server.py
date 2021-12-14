@@ -14,20 +14,28 @@ import io
 import numpy as np
 
 app = Flask(__name__)
-
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 app.secret_key = 'secret-key'
 admin = Admin(app)
+db = SQLAlchemy(app)
 
 #Connect to database
 connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
 
+class Users(UserMixin,db.Model): 
+    id = db.Column(db.Integer, primary_key=True) 
+
+    def __repr__(self): 
+        return '<Users %r>' % self.username
+
+
 @login_manager.user_loader
 def load_user(id):
-    return id
+    return Users.query.get(id)
 
 
 
@@ -119,31 +127,15 @@ def createPost():
     elif request.method == "POST":
         #Retrieve post information from newPost.html and INSERT into db
         #Blob a photo.... make null if no photo
+        inputted_image = request.form["post-image"]
+        inputeed_textarea = request.form["post-textarea"]
+
+        cur.execute("""INSERT INTO posts (text_content,media_content,num_likes,num_dislikes,comment_list,date_posted,author_id)
+                        VALUES (text_content=:text_content,media_content=:media_content,0,0,'',GETDATE(),author_id=:author_id)
+                    """, {"text_content": inputted_textarea, "media_content": inputted_image})
 
         return redirect(url_for("generateFeed"))
 
-@app.route('/viewPost', methods = ['GET'])
-def viewPost():
-    print("viewing post")
-    #Get all post data from db and pass it through render_template
-
-    return render_template("postView.html")
-
-@app.route('/createComment', methods= ['GET', 'POST'])
-def createComment():
-    print("creating comment")
-
-    if request.method == "GET":
-        #You can only access createcomment from postView.html
-        #post = request.form["post_id"]
-
-        return render_template("newComment.html")
-    elif request.method == "POST":
-        #Retrieve post information from newComment.html and INSERT into db
-        #Blob a photo.... make null if no photo
-        #Don't forget parent post
-
-        return redirect(url_for("generateFeed"))
 
 @app.route("/viewProfile", methods = ['GET'])
 def viewProfile():
@@ -198,7 +190,7 @@ def Login():
     print('postLogin')
     if request.method == 'GET':
         if(current_user.is_authenticated):
-            return redirect(url_for('studentView'))
+            return redirect(url_for('viewProfile'))
 
         return render_template('login.html')
 
@@ -207,13 +199,31 @@ def Login():
         inputted_password = request.form["password"]
 
         #INSERT login logic... retrieve username and password from db
-        cur.execute('SELECT username, password FROM users WHERE username=:username AND password=:password', {"username": inputted_username, "password": inputted_password})
+        cur.execute('SELECT * FROM users WHERE username=:username AND password=:password', {"username": inputted_username, "password": inputted_password})
+        ogLogin =""
         result = cur.fetchone()
+
         if result is None:
-            print("not authenticated")
+            result = cur.execute('SELECT username FROM users WHERE username=:username',{"username":inputted_username}).fetchone()
+            ogLogin = result
+            print(result)
+            if result is None:
+                flash('User not found. Try Registering?')
+                return redirect(url_for("login"))
+            flash('Username or password is incorrect')
             return redirect(url_for("login"))
+        user = Users()
+        Users.id = result[0]
+        login_user(user)
+        print(current_user.get_id())
 
         return redirect(url_for("generateFeed"))
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)
