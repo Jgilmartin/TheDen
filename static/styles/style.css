@@ -1,8 +1,14 @@
 html,body{
     width: 100%;
     height: 100%;
-    background-color: rgb(239, 255, 255);
+    overflow-x: hidden;
 }
+
+::-webkit-scrollbar {
+    width: 0;  
+    background: transparent; 
+}
+
 .root-container{
     width: 100%;
     height: 100%;
@@ -29,10 +35,13 @@ html,body{
 .side-bar{
     width: 10%;
     height: 100%;
-    background-color: rgb(221, 221, 221);
+    background-color: rgb(245, 245, 245);
+    border-style: solid;
+    border-width: 3px;
+    border-color: white;
 }
 .content{
-    background-color: rgb(255, 255, 255);
+    background-color: white;
     width: 90%;
     height: 100%;
 }
@@ -42,11 +51,14 @@ html,body{
     height: 10%;
     display: flex;
     flex-direction: row;
-    background-color: cornflowerblue;
+    background-color: rgb(245, 245, 245);
     align-items: center;
     color: white;
     padding: 10px;
     gap: 15px;
+    border: rgb(255, 255, 255);
+    border-style: solid;
+    border-width: 3px;
 }
 
 #log-out-link{
@@ -55,7 +67,7 @@ html,body{
 }
 
 .nav a{
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 .topnav a.active {
@@ -97,7 +109,7 @@ img.side-profile-pic{
     background: none;
     margin-top: 100px;
     margin-left: 25%;
-    visibility: hidden;
+    /*visibility: hidden; */
 }
 
 .button-notifs:active, .button-notifs:focus, .button-notifs:hover {
@@ -105,7 +117,7 @@ img.side-profile-pic{
 }
 
 .profile-banner{
-    background-color: rgb(221, 221, 221);
+    background-color: rgb(245, 245, 245);
     width: 100%;
     height: 20%;
     border: rgb(255, 255, 255);
@@ -170,26 +182,43 @@ img.side-profile-pic{
     border-style: solid;
 }
 
+#user-bio{
+    overflow-y: scroll;
+}
+
+.btn{
+    width: 150px;
+    height: 60px;
+}
+
 .profile-feed{
-    background-color: cornflowerblue;
+    background-color: white;
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: row;
     overflow-x: hidden;
     overflow-y: scroll ;
     border: rgb(255, 255, 255);
     border-style: solid;
     border-width: 3px;
+    align-items: center;
+    scrollbar-width: none;
+
 }
 
 .post{
     width: 50%;
-    height: 50%;
+    height: 60%;
     margin-left: 25%;
     margin-right: 25%;
-    margin-top: 50px;
-    background-color: cornsilk;
+    margin-top: 50px; 
+    background-color: rgb(255, 255, 255);
     display: flex;
     flex-direction: column; 
+    border: black;
+    border-width: 1px;
+    border-style: solid;
 }
 
 .post-content{
@@ -206,26 +235,37 @@ img.side-profile-pic{
 }
 
 .post-image{
-    background-color: crimson;
     width: 100%;
     height: 70%;
     overflow-x: hidden;
-    overflow-y: hidden ;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+
+.post-image img{
+    max-width:100%;
+    max-height:100%;
 }
 
 .post-desc{
-    background-color: rgb(117, 235, 62);
     width: 100%;
     height: 30%;
     overflow-y: scroll ;
+    scrollbar-width: none;
 }
 
 .post-comments{
     overflow-x: hidden;
     overflow-y: scroll;
+    scrollbar-width: none;
     width: 100%;
     height: 100%;
-    background-color: cyan;
+}
+
+/* Profile Edit Modal */
+.container{
+    display: flex;
+    flex-direction: row;
 }
 
 .divider:after,
@@ -242,4 +282,18 @@ img.side-profile-pic{
   .h-custom {
     height: 100%;
   }
+}
+/* Create Post */
+.create-post-modal{
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(222,222,222,1) 48%, rgba(83,83,83,0.6166841736694677) 100%);
+    border: rgb(100, 100, 100);
+    border-style: solid;
+    border-width: 3px;
+    margin-left: 25%;
+}
+#post-textarea{
+    width: 450px;
+    height: 100%;
 }
