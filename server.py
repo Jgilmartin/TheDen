@@ -80,7 +80,7 @@ def generateFeed():
     #Algorithmically generate a feed from follower list
     target_profile_id = current_user.get_id()
     print(target_profile_id)
-    cur.execute('SELECT following_list FROM profile WHERE profile.id=:id', {"id": target_profile_id})
+    cur.execute('SELECT following_list FROM profile WHERE id=:id', {"id": target_profile_id})
     result = cur.fetchone()
     following_list = result[0].split(",")
     following_list.pop(-1) #Remove the empty last element

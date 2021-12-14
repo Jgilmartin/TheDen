@@ -17,7 +17,7 @@ cur.execute("INSERT INTO users (username, password, profile_id) VALUES (?, ?, ?)
 cur.execute("INSERT INTO users (username, password, profile_id) VALUES (?, ?, ?)", ('sugo', 'deez', 72))
 
 cur.execute("INSERT INTO profile (pfp, screenname, user_id, follower_list, following_list, post_list, bio) VALUES (?, ?, ?, ?, ?, ?, ?)", (file_to_BLOB("expics/pfp1.jpg"), 'bofadeezSlayer', 420, '2,', '2,', '1,', 'i like ballz'))
-cur.execute("INSERT INTO profile (pfp, screenname, user_id, follower_list, following_list, post_list, bio) VALUES (?, ?, ?, ?, ?, ?, ?)", (file_to_BLOB("expics/pfp2.jpg"), 'ChoccyMilkFan', 421, '1,', '2,', '2,', 'choccymilk > bofa milk'))
+cur.execute("INSERT INTO profile (pfp, screenname, user_id, follower_list, following_list, post_list, bio) VALUES (?, ?, ?, ?, ?, ?, ?)", (file_to_BLOB("expics/pfp2.jpg"), 'ChoccyMilkFan', 421, '1,', '1,', '2,', 'choccymilk > bofa milk'))
 
 
 
