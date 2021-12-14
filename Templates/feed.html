@@ -10,7 +10,12 @@
 <body>
 	<!-- a 'profile' variable should be passed here.. 
 		it will be an object that should contain data from the database-->
-
+	<div class="nav">
+            <input type="text" placeholder="Search..">
+            <a href="{{url_for('generateFeed')}}">Home</a>
+            <a href="{{url_for('viewProfile')}}">My Profile</a>
+            <a href="{{url_for('logout')}}">Log Out</a>
+    </div>
 	<div class="profile_panel"> <!-- Panel on the left side of the screen -->
 		<!-- Profile Picture {profile.pfp:}-->
 		<!-- Screen Name {profile.screenname:}-->

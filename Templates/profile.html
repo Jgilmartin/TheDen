@@ -17,9 +17,9 @@
     <div class="root-container">
         <div class="nav">
             <input type="text" placeholder="Search..">
-            <a href="feed.html">Home</a>
-            <a href="profile.html">My Profile</a>
-            <a id="log-out-link" href="">Log Out</a>
+            <a href="{{url_for('generateFeed')}}">Home</a>
+            <a href="{{url_for('viewProfile')}}">My Profile</a>
+            <a href="{{url_for('logout')}}">Log Out</a>
         </div>
         <div class="container-columns">
             <div class="side-bar">
