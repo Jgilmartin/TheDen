@@ -55,18 +55,29 @@ def index():
     return redirect(url_for("generateFeed"))
 
 
-@app.route('/register', methods= ['GET', 'POST'])
-def register(): #Create a new User and subsequent Profile
+@app.route('/register', methods=['GET', 'POST'])
+def register():  # Create a new User and subsequent Profile
     print('register')
-
+    if request.method == 'GET':
+        return render_template('newUser.html')
     if request.method == 'POST':
-        username = request.form['username'] #Won't work because of email on newUser
+        username = request.form['username']
         password = request.form['password']
+        cur.execute('INSERT INTO users(username, password) VALUES(?, ?)',(username,password))
+        connection.commit()
+        logout_user()
 
-        return redirect(url_for("newUser"))
-    elif request.method == 'GET':
-        return render_template("newUser.html")
+        cur.execute('SELECT id FROM users WHERE username=:username AND password=:password', {"username": inputted_username, "password": inputted_password})
+        new_id = cur.fetchone()[0]
+        new_user = User()
+        new_user.id = new_id
+        login_user(new_user)
 
+
+        hashedPassword = hashlib.md5(password.encode())
+        password = hashlib.pbkdf2_hmac('sha224',)
+
+        return redirect(url_for('newUser'))
 
 
 @app.route('/newUser', methods= ['GET', 'POST'])
