@@ -83,6 +83,12 @@ def createPost():
     elif request.method == "POST":
         # Retrieve post information from newPost.html and INSERT into db
         # Blob a photo.... make null if no photo
+        inputted_image = request.form["post-image"]
+        inputted_textarea = request.form["post-textarea"]
+
+        cur.execute("""INSERT INTO posts (text_content,media_content,num_likes,num_dislikes,comment_list,date_posted,author_id)
+                        VALUES (text_content=:text_content,media_content=:media_content,0,0,'',GETDATE(),author_id=:author_id)
+                    """, {"text_content": inputted_textarea, "media_content": inputted_image})
 
         return redirect(url_for("generateFeed"))
 

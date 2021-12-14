@@ -29,7 +29,7 @@ html,body{
     display: flex;
     flex-direction: row;
     align-content: left;
-    background-color: burlywood;
+    background-color: rgb(255, 255, 255);
 }
 
 .side-bar{
@@ -284,16 +284,65 @@ img.side-profile-pic{
   }
 }
 /* Create Post */
-.create-post-modal{
+#post-textarea{
     width: 50%;
     height: 100%;
-    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(222,222,222,1) 48%, rgba(83,83,83,0.6166841736694677) 100%);
-    border: rgb(100, 100, 100);
-    border-style: solid;
-    border-width: 3px;
     margin-left: 25%;
 }
-#post-textarea{
-    width: 450px;
+
+#post-image{
+    width: 50%;
     height: 100%;
+    margin-left: 25%;
 }
+
+#post-sumbit{
+    margin-left: 25%;
+}
+
+/* View Post */
+#view-post{
+    width: 50%;
+    height: 50%;
+    align-items: center;
+    align-content: center;
+    text-align: left;
+    margin-left: 30% ;
+    margin-top: 10px;
+}
+
+#view-post-image{
+    width: 600px;
+    height: 300px;
+}
+#view-post-desc{
+    width: 600px;
+    height: 100px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
+    overflow-y: scroll;
+}
+
+#view-comments{
+    width: 100%;
+    overflow-y: scroll;
+    
+}
+
+#view-post-comment{
+    width: 100%;
+    height: auto;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
+
+}
+
+.comment-container{
+    width: 100%;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
