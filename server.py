@@ -16,6 +16,12 @@ login_manager.login_view = 'login'
 app.secret_key = 'secret-key'
 admin = Admin(app)
 
+@login_manager.user_loader
+def load_user(id):
+    return id
+
+
+
 @app.route('/')
 def index():
     print('landing')
@@ -104,20 +110,10 @@ def Login():
 
     if request.method == 'POST':
         print(request.form['username'])
-        user = Users.query.filter_by(username = request.form['username'])
-        if user is None:
-            return redirect(url_for('login'))
         
-        user = user.first()
-        
-        if user is None:
-            return redirect(url_for('login'))
 
-        if not user.checkPassword(request.form['password']):
-            return redirect(url_for('login'))
+        #INSERT login logic... retrieve username and password from db
 
-        login_user(user)
-        print (user.userLevel)
         return redirect(url_for("generate_feed"))
 
 if __name__ == '__main__':
