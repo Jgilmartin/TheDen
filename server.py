@@ -22,6 +22,12 @@ app.secret_key = 'secret-key'
 admin = Admin(app)
 db = SQLAlchemy(app)
 
+
+def file_to_BLOB(filename):
+    with open(filename, "rb") as file:
+        blobData = file.read()
+    return blobData
+
 #Connect to database
 connection = sqlite3.connect('database.db', check_same_thread=False)
 cur = connection.cursor()
@@ -79,7 +85,7 @@ def generateFeed():
     print("generating feed")
     #Algorithmically generate a feed from follower list
     target_profile_id = current_user.get_id()
-    print(target_profile_id)
+    
     cur.execute('SELECT following_list FROM profile WHERE id=:id', {"id": target_profile_id})
     result = cur.fetchone()
     following_list = result[0].split(",")
@@ -111,6 +117,7 @@ def generateFeed():
                 post_list.append(post)
 
     #GET follower data from database
+    print(len(post_list))
     return render_template("feed.html", post_list=post_list)
 
 @app.route('/createPost', methods = ['GET',  'POST'])
@@ -122,12 +129,26 @@ def createPost():
     elif request.method == "POST":
         #Retrieve post information from newPost.html and INSERT into db
         #Blob a photo.... make null if no photo
-        inputted_image = request.form["post-image"]
-        inputeed_textarea = request.form["post-textarea"]
+        inputted_image = request.files["post-image"].read()
+        print(inputted_image)
+        inputted_textarea = request.form["text_content"]
 
-        cur.execute("""INSERT INTO posts (text_content,media_content,num_likes,num_dislikes,comment_list,date_posted,author_id)
-                        VALUES (text_content=:text_content,media_content=:media_content,0,0,'',GETDATE(),author_id=:author_id)
-                    """, {"text_content": inputted_textarea, "media_content": inputted_image})
+        cur.execute("""INSERT INTO posts (media_content, text_content,num_likes,num_dislikes,comment_list,date_posted,author_id)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)""", 
+                        (inputted_image, inputted_textarea, 0, 0, "0,", "12/14/2021", current_user.get_id()))
+
+        connection.commit()
+
+        cur.execute('SELECT id FROM posts')
+        all_posts = cur.fetchall()
+        print(all_posts[-1][0])
+
+        cur.execute('SELECT post_list FROM profile WHERE id=:id', {"id": current_user.get_id()})
+        post_list_string = cur.fetchone()[0]
+
+        post_list_string = post_list_string + str(all_posts[-1][0]) + ","
+
+        cur.execute('UPDATE profile SET post_list=:post_string WHERE id=:id', {"post_string": post_list_string, "id": current_user.get_id()})
 
         return redirect(url_for("generateFeed"))
 
@@ -156,6 +177,7 @@ def viewProfile():
     follower_count = len(follower_string.split(",")) - 1
     following_count = len(following_string.split(",")) - 1
 
+    print(string_post_list)
 
     post_ids = string_post_list.split(",")
     post_ids.pop(-1)
