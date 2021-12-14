@@ -1,6 +1,6 @@
 from enum import unique
 from html import entities
-from flask import Flask, jsonify, request, render_template, redirect, url_for, session
+from flask import Flask, jsonify, request, render_template, redirect, url_for, session, flash
 from flask_login.utils import login_required
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user, login_user, LoginManager, UserMixin, logout_user
@@ -27,7 +27,9 @@ cur = connection.cursor()
 
 @login_manager.user_loader
 def load_user(id):
-    return id
+    cur.execute("SELECT username FROM users WHERE profile_id=:id",{"id": id})
+    user = cur.fetchone()
+    return user[0]
 
 
 
@@ -161,7 +163,7 @@ def Login():
     print('postLogin')
     if request.method == 'GET':
         if(current_user.is_authenticated):
-            return redirect(url_for('studentView'))
+            return redirect(url_for('viewProfile'))
 
         return render_template('login.html')
 
@@ -171,11 +173,20 @@ def Login():
 
         #INSERT login logic... retrieve username and password from db
         cur.execute('SELECT username, password FROM users WHERE username=:username AND password=:password', {"username": inputted_username, "password": inputted_password})
+        ogLogin =""
         result = cur.fetchone()
         if result is None:
-            print("not authenticated")
+            result = cur.execute('SELECT username FROM users WHERE username=:username',{"username":inputted_username}).fetchone()
+            ogLogin = result
+            print(result)
+            if result is None:
+                print('user notfound')
+                flash('User not found. Try Registering?')
+                return redirect(url_for("login"))
+            flash('Username or password is incorrect')
             return redirect(url_for("login"))
-
+        login_user(ogLogin)
+        
         return redirect(url_for("generateFeed"))
 
 if __name__ == '__main__':
