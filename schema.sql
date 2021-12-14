@@ -13,6 +13,7 @@ CREATE TABLE users (
 
 CREATE TABLE profile (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	pfp BLOB,
 	screenname TEXT NOT NULL,
 	user_id INTEGER NOT NULL,
 	follower_list TEXT NOT NULL,
@@ -25,6 +26,7 @@ CREATE TABLE profile (
 CREATE TABLE posts (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	text_content TEXT NOT NULL,
+	media_content BLOB,
 	num_likes INTEGER NOT NULL,
 	num_dislikes INTEGER NOT NULL,
 	comment_list TEXT NOT NULL,
@@ -37,6 +39,7 @@ CREATE TABLE posts (
 CREATE TABLE comments (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	text_content TEXT NOT NULL,
+	media_content BLOB,
 	num_likes INTEGER NOT NULL,
 	num_dislikes INTEGER NOT NULL,
 	author_id INTEGER NOT NULL,
