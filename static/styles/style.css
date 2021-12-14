@@ -1,7 +1,8 @@
-html,body{
+html,body, a{
     width: 100%;
     height: 100%;
     overflow-x: hidden;
+    color: black;
 }
 
 ::-webkit-scrollbar {
@@ -346,3 +347,8 @@ img.side-profile-pic{
     margin-top: 20px;
 }
 
+/* Edit Profile */
+#edit-bio{
+    max-height: 100%;
+    width: 400px;
+}
