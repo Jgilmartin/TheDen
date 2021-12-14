@@ -1,6 +1,6 @@
 from enum import unique
 from html import entities
-from flask import Flask, jsonify, request, render_template, redirect, url_for, session
+from flask import Flask, jsonify, request, render_template, redirect, url_for, session, flash
 from flask_login.utils import login_required
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user, login_user, LoginManager, UserMixin, logout_user
@@ -78,8 +78,9 @@ def newUser(): #Create the profile and submit to database
 def generateFeed():
     print("generating feed")
     #Algorithmically generate a feed from follower list
-    default = "bofadeezSlayer"
-    cur.execute('SELECT following_list FROM profile WHERE screenname=:screenname', {"screenname": default})
+    target_profile_id = current_user.get_id()
+    print(target_profile_id)
+    cur.execute('SELECT following_list FROM profile WHERE profile.id=:id', {"id": target_profile_id})
     result = cur.fetchone()
     following_list = result[0].split(",")
     following_list.pop(-1) #Remove the empty last element
@@ -99,7 +100,6 @@ def generateFeed():
 
             cur.execute('SELECT * FROM posts where posts.id=:id', {"id": post_id_list[-1]})
             result = cur.fetchone()
-            print(result)
             if result is not None:
                 post = []
                 for value in result:
@@ -109,11 +109,6 @@ def generateFeed():
                 post.append(pfp)
                 post.append(author)
                 post_list.append(post)
-
-
-    print(len(post_list))
-
-
 
     #GET follower data from database
     return render_template("feed.html", post_list=post_list)
@@ -142,9 +137,9 @@ def viewProfile():
     print("viewing Profile")
 
     #retreive screenname...
-    default = "bofadeezSlayer"
+    target_profile_id = current_user.get_id()
 
-    cur.execute('SELECT pfp, screenname, follower_list, following_list, bio, post_list FROM profile WHERE screenname=:screenname', {"screenname": default})
+    cur.execute('SELECT pfp, screenname, follower_list, following_list, bio, post_list FROM profile WHERE id=:id', {"id": target_profile_id})
     result = cur.fetchone()
     if result is None:
         #maybe an error profile page... like deleted profile... probably redirect back to wherever you came
@@ -213,9 +208,8 @@ def Login():
             flash('Username or password is incorrect')
             return redirect(url_for("login"))
         user = Users()
-        Users.id = result[0]
+        user.id = result[0]
         login_user(user)
-        print(current_user.get_id())
 
         return redirect(url_for("generateFeed"))
 
