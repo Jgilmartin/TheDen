@@ -33,35 +33,45 @@
 			<div class="post_metadata">
 				<!-- Author -->
 				<div class="author">
-					<!-- Profile Pic {post.author_picture} -->
 					<!-- Profile Author -->
-					<h2> {{post.author_name}}</h2>
+					<h2> {{post[-1]}}</h2>
+				</div>
+				<div class="profile-pic">
+					<img src ="data:image/jpg;base64, {{ post[-2] }}">
 				</div>
 				<div class="likes">
 					<!-- Number of likes -->
-					<h2> {{post.like_number}}</h2>
+					<h2> {{post[3]}}</h2>
 					<!-- Thumbs up button-->
 					<!-- Number of dislikes -->
-					<h2> {{post.dislike_number}}</h2>
+					<h2> {{post[4]}}</h2>
 					<!-- Thumbs Down button-->
+				</div>
+			</div>
+			<div class="post-content">
+				 <div class="post-image">
+					<img src ="data:image/jpg;base64, {{ post[2] }}">
+				</div>
+				<div class="post-desc">
+					<p> {{ post[1] }} </p>
 				</div>
 			</div>
 		</div>
 		<div class="comment_preview"> <!-- Comment preview for each post-->
-			<h2 class="comment_number"> {{post.comment_number}} Comments <h2>
+			<h2 class="comment_number"> Comments <h2>
 
 			<!-- only show the top comment on the feed?? -->
 			<div class="comment">
 				<!-- Tiny Profile Pic? {post.top_comment.author_picture} -->
-				<h2> {{post.top_comment.author_name}} </h2>
-				<p class="comment_text"> {{post.top_comment.text}} <p>
+				<h2> </h2>
+				<p class="comment_text"> <p>
 			</div>
 
 			<!-- if more than one comment we should use a for loop with post.comments as an array... with a comment div-->
 		</div>
 		<!-- Insert Spacing Between Posts -->
 
-	{% end %}
+	{% endfor %}
 	</div>
 
 </body>

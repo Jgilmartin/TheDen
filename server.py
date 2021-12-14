@@ -70,8 +70,44 @@ def newUser(): #Create the profile and submit to database
 def generateFeed():
     print("generating feed")
     #Algorithmically generate a feed from follower list
+    default = "bofadeezSlayer"
+    cur.execute('SELECT following_list FROM profile WHERE screenname=:screenname', {"screenname": default})
+    result = cur.fetchone()
+    following_list = result[0].split(",")
+    following_list.pop(-1) #Remove the empty last element
+
+    post_list = []
+    for profile_id in following_list:
+        cur.execute('SELECT post_list, pfp, screenname FROM profile WHERE id=:id', {"id": profile_id})
+        result = cur.fetchone()
+
+        if result is not None:
+            post_id_list = result[0].split(",")
+            post_id_list.pop(-1)
+
+            pfp = base64.b64encode(result[1]).decode('utf-8')
+            author = result[2]
+
+
+            cur.execute('SELECT * FROM posts where posts.id=:id', {"id": post_id_list[-1]})
+            result = cur.fetchone()
+            print(result)
+            if result is not None:
+                post = []
+                for value in result:
+                    post.append(value)
+
+                post[2] = base64.b64encode(post[2]).decode('utf-8')
+                post.append(pfp)
+                post.append(author)
+                post_list.append(post)
+
+    print(len(post_list))
+
+
+
     #GET follower data from database
-    return render_template("feed.html")
+    return render_template("feed.html", post_list=post_list)
 
 @app.route('/createPost', methods = ['GET',  'POST'])
 def createPost():
